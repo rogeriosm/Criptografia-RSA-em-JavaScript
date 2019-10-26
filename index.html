@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head lang="pt-br">
+        <meta charset="UTF-8">
+        <title>RSA - criptografia</title>
+        <meta name="description" content="Criptografia RSA em JavaScript, HTML, CSS">
+        <meta name="keywords" content="rsa, criptografia, assimetrico">
+        <meta name="robots" content="index, follow">
+        <meta name="author" content="Rogerio Silva Moura">
+        <link rel="icon" href="resource/img/icone.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--
+        css para resetar e padronizar todos os elementos html
+        site http://meyerweb.com/eric/tools/css/reset/ 
+        versão v2.0 | 20110126
+        License: none (public domain)
+        -->
+        <link rel="stylesheet" href="resource/css/reset.css">
+        <!--
+        arquivo bootstrap
+        Bootstrap é lançado sob a licença MIT e seus direitos autorais em 2018 são do Twitter.
+        licença https://getbootstrap.com.br/docs/4.1/about/license/
+        site https://getbootstrap.com.br/
+        documentação https://getbootstrap.com.br/docs/4.1/getting-started/introduction/
+        -->
+        <link rel="stylesheet" href="resource/css/bootstrap4.min.css">
+        <!--arquivo style padrâo da pagina-->
+        <link rel="stylesheet" href="resource/css/style.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="cabecalho">
+                <span class="logo">Trabalho APS sobre criptografia</span>
+            </div>
+            <div class="form-row box">
+                <div class="form-group col-md-3">
+                    <label for="p">P</label>
+                    <!--
+                    input para a entrada do codigo que dara origem a chave criptografica
+                    -->
+                    <input list="numerosPrimos" name="p" id="p" class="form-control"
+                           placeholder="Chave Privada">
+                    <label for="p" class="chavePrivada"><b>Chave Privada</b></label>
+                </div>
+                <div class="form-group col-md-3">
+                    <!--
+                    input para a entrada do codigo que dara origem a chave criptografica
+                    -->
+                    <label for="q">Q</label>
+                    <input list="numerosPrimos" name="q" id="q" class="form-control"
+                           placeholder="Chave Privada">
+                    <label for="q" class="chavePrivada"><b>Chave Privada</b></label>
+                </div>
+                <div class="form-group col-md-3">
+                    <!--corrigir posiçao do botão
+                    esse botão chamara as funções que faram os calculos da criptografia
+                    e mostrarão em seus respectivos campos
+                    -->
+                    <label></label>
+                    <button type="button" class="btn btn-primary form-control"
+                            onclick="mother()">Gerar Chaves</button>
+                </div>
+                <datalist id="numerosPrimos" >
+                    <option value="17">17</option>
+                    <option value="19">19</option>
+                    <option value="53">53</option>
+                    <option value="59">59</option>
+                    <option value="97">97</option>
+                    <option value="101">101</option>
+                    <option value="211">211</option>
+                    <option value="223">223</option>
+                    <option value="601">601</option>
+                    <option value="607">607</option>
+                    <option value="991">991</option>
+                    <option value="997">997</option>
+                </datalist>
+            </div>
+
+            <div class="form-row box">
+                <div class="form-group col-md-3">
+                    <!--
+                    input para mostrar resultado do calculo para obter φN
+                    -->
+                    <label for="tn">φN (φn=(p-1)*(q-1))</label>
+                    <input type="text" name="tn" id="tn" class="form-control" >
+                    <label for="d" class="chavePrivada"><b>Chave Privada</b></label>
+                </div>
+                <div class="form-group col-md-3">
+                    <!--
+                    input para mostrar resultado do calculo para obter n
+                    -->
+                    <label for="n">N (n = p * q)</label>
+                    <input type="text" name="n" id="n" class="form-control" 
+                           placeholder="Chave Publica">
+                    <label for="n" class="chavePublica"><b>Chave Publica</b></label>
+                </div>
+                <div class="form-group col-md-3">
+                    <!--
+                    input para mostrar resultado do calculo para obter e
+                    -->
+                    <label for="e">E (e=MDC(e,φn)=1)</label>
+                    <input type="text" name="e" id="e" class="form-control" 
+                           placeholder="Chave Publica">
+                    <label for="e" class="chavePublica"><b>Chave Publica</b></label>
+                </div>
+                <div class="form-group col-md-3">
+                    <!--
+                    input para mostrar resultado do calculo para obter d
+                    -->
+                    <label for="d">D (d=(d*e)mod(tn)=1)</label>
+                    <input type="text" name="d" id="d" class="form-control" 
+                           placeholder="Chave Privada">
+                    <label for="d" class="chavePrivada"><b>Chave Privada</b></label>
+                </div>
+            </div>
+
+            <!--campos para criptografia-->
+            <div class="form-row box">
+                <div class="form-group col-md-4">
+                    <span class="subtitulo">Mensagem</span>
+                    <textarea rows="8" cols="40" id="msgPrincipal" maxlength="128" 
+                              class="form-control" name="msgPrincipal"
+                              placeholder="Digite uma mensagem de 128 caracteres a ser criptografada"></textarea>
+                    <button type="button" class="btn btn-primary form-control"
+                            onclick="criptografarMsg();">Criptografar</button>
+                </div>
+                <div class="form-group col-md-4">
+                    <span class="subtitulo">Mensagem pre criptografada</span>
+                    <textarea rows="8" cols="40" id="msgPreCript" name="msgPreCript" class="form-control" 
+                              placeholder="Aqui a mensagem é transformada em numeros atraves da tabela ASCII"></textarea>
+                </div>
+                <div class="form-group col-md-4">
+                    <span class="subtitulo">Mensagem criptografada M^E mod(n)</span>
+                    <textarea rows="8" cols="40" id="msgCript" name="msgCript" class="form-control" 
+                              placeholder="Aqui aparece a mensagem criptografada"></textarea>
+                </div>
+            </div>
+
+            <!--campos da descriptografia-->
+            <div class="form-row box">
+                <div class="form-group col-md-4">
+                    <span class="subtitulo">Mensagem criptografada</span>
+                    <textarea rows="8" cols="40" id="msgCriptForDesCript" 
+                              name="msgCriptForDesCript" class="form-control"
+                              placeholder="Digite a mensagem criptografada"></textarea>
+                    <button type="button" class="btn btn-primary form-control"
+                            onclick="descriptografarMsg10();">Descriptografar</button>
+                </div>
+                <div class="form-group col-md-4">
+                    <span class="subtitulo">Mensagem Pre Descriptografada</span>
+                    <textarea rows="8" cols="40" id="msgPreDescript"
+                              name="msgPreDescript" class="form-control" 
+                              placeholder="Aqui a mensagem é transformada em numeros atraves da tabela ASCII"></textarea>
+                </div>
+                <div class="form-group col-md-4">
+                    <span class="subtitulo">Mensagem descriptografada C^D mod(n)</span>
+                    <textarea rows="8" cols="40" id="msgDescript" class="form-control" 
+                              placeholder="Aqui aparece a mensagem descriptografada"></textarea>
+                </div>
+            </div>
+
+            <div class="rodape">
+                <pre>Integrante do grupo:
+                    Bruno
+                    Natanael
+                    Pedro
+                    Rogerio
+                    Smidt
+                </pre>
+
+            </div>
+        </div>
+
+        <!--
+        Biblioteca javaScript bignumber.js
+        Essa biblioteca se encontra sobre a proteção da licença "MIT License"
+        A JavaScript library for arbitrary-precision decimal and non-decimal arithmetic.
+        documentação http://mikemcl.github.io/bignumber.js/
+        gitHub https://github.com/MikeMcl/bignumber.js/
+        Essa biblioteca foi usado com intuito de melhorar o desempenho e precisão 
+        dos calculos matematicos um vez que a classe padrão MATH não suporta calculos
+        matematicos com mais de 80bits
+        -->
+        <script src="resource/js/bignumber.js" ></script>
+        <!--
+        biblioteca javaScript onde estão todas as funções de calculo e logica do programa
+        -->
+        <script src="resource/js/script.js" ></script>
+    </body>
+</html>

@@ -1,0 +1,60 @@
+:root{
+    --danger:#dc3545;
+    --success:#28a745;
+    --secondary:#6c757d;
+    --vermelho: #EA374D;
+    --violeta: #D82567;
+    /*--amarelo: #FDF850;*/
+    --amarelo: #E7D712;
+    --laranja: #F9A137;
+    /*--verde: #66DF78;*/
+    --verde: #54B452;
+    --azul: #59d2ff;
+    --roxo: #B767C0;
+    --preto: rgb(33,37,41);
+    --branco: #f7f7f7;
+}
+body{
+}
+
+.cabecalho{
+    height: 120px;
+    width: 100%;
+    text-align: center;
+    background-color: var(--secondary);
+}
+.rodape{
+    height: 150px;
+    width: 100%;
+    background-color: var(--secondary);
+}
+
+.box{
+    border: 2px solid var(--branco);
+    border-radius: 10px;
+    padding-right:15px;
+    padding-left:15px;
+    margin-right:auto;
+    margin-left:auto
+}
+
+.subtitulo{
+    font-size: 1.5rem;
+}
+
+.chavePrivada{
+    color: var(--danger);
+}
+.chavePublica{
+    color: var(--success);
+}
+
+textarea {
+  resize: none;
+  border-radius: 10px;
+}
+
+.logo{
+    font-size: 2.5rem;
+}
+    
